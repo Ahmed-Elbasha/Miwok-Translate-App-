@@ -9,6 +9,8 @@ public class Word {
     /** Default translation for the word */
     private String mDefaultTranslation;
 
+    private int mImageResourceId;
+
     /**
      * Create a new Word object.
      *
@@ -33,5 +35,9 @@ public class Word {
      */
     public String getmDefaultTranslation() {
         return mDefaultTranslation;
+    }
+
+    public int getmImageResourceId() {
+        return mImageResourceId;
     }
 }
