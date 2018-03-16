@@ -1,5 +1,6 @@
 package com.example.ahmedelbasha.miwok;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -16,8 +17,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 public class WordAdapter extends ArrayAdapter<Word>{
-
-    private  int mActivityColorId;
+    private int mActivityColorId;
 
     /**
      * This is our own custom constructor (it doesn't mirror a superclass constructor).
@@ -27,7 +27,7 @@ public class WordAdapter extends ArrayAdapter<Word>{
      * @param context The current context. Used to inflate the layout file.
      * @param words A List of Word objects to display in a list
      */
-    public WordAdapter(Context context, ArrayList<Word> words, int activityColorId) {
+    public WordAdapter(Context context, ArrayList<Word> words,int activityColorId) {
         super(context, 0, words);
         mActivityColorId = activityColorId;
     }
@@ -41,6 +41,7 @@ public class WordAdapter extends ArrayAdapter<Word>{
      * @param parent The parent ViewGroup that is used for inflation.
      * @return The View for the position in the AdapterView.
      */
+    @SuppressLint("ResourceAsColor")
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
@@ -54,6 +55,10 @@ public class WordAdapter extends ArrayAdapter<Word>{
         Word currentWord = getItem(position);
 
         int wordImageResourceId = currentWord.getmImageResourceId();
+
+        //int wordAudioResourceId = currentWord.getmAudioResourceId();
+
+//      final MediaPlayer  mediaPlayer = MediaPlayer.create(getContext(), wordAudioResourceId);
 
         LinearLayout textContainer = listItemView.findViewById(R.id.text_container);
 
@@ -75,6 +80,12 @@ public class WordAdapter extends ArrayAdapter<Word>{
             wordImage.setVisibility(View.GONE);
         }
 
+//        listItemView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                mediaPlayer.start();
+//            }
+//        });
 
 //        if( wordImageResourceId == 0) {
 //            wordImage.setVisibility(View.GONE);
