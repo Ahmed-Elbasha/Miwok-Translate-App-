@@ -1,20 +1,25 @@
 package com.example.ahmedelbasha.miwok;
 
+
 import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.support.v4.app.NavUtils;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.view.MenuItem;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class NumbersActivity extends AppCompatActivity {
+/**
+ * A simple {@link Fragment} subclass.
+ */
+public class NumbersFragment extends Fragment {
 
     MediaPlayer mMediaPlayer;
     private  MediaPlayer.OnCompletionListener mOnCompletionListener = new MediaPlayer.OnCompletionListener() {
@@ -47,14 +52,17 @@ public class NumbersActivity extends AppCompatActivity {
         }
     };
 
+    public NumbersFragment() {
+        // Required empty public constructor
+    }
+
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.word_list);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.word_list, container, false);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        mAudioManager = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
 
         // Create a list of words
         final ArrayList<Word> words = new ArrayList<>();
@@ -70,9 +78,9 @@ public class NumbersActivity extends AppCompatActivity {
         words.add(new Word("wo’e", "nine", R.drawable.number_nine, R.raw.number_nine));
         words.add(new Word("na’aacha", "ten", R.drawable.number_ten, R.raw.number_ten));
 
-        WordAdapter wordArrayAdapter = new WordAdapter(this, words, R.color.category_numbers);
+        WordAdapter wordArrayAdapter = new WordAdapter(getActivity(), words, R.color.category_numbers);
 
-        ListView listView = (ListView) findViewById(R.id.list);
+        ListView listView =  rootView.findViewById(R.id.list);
 
         listView.setAdapter(wordArrayAdapter);
 
@@ -82,27 +90,32 @@ public class NumbersActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Word currentWordObject = words.get(position);
-                Log.i("NumbersActivity", "Current word:   " + currentWordObject.toString());
                 releaseMediaPlayer();
 
                 int result = mAudioManager.requestAudioFocus(mOnAudioFocusChangeListener, AudioManager.STREAM_MUSIC,
                         AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
 
                 if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
-                    mMediaPlayer = MediaPlayer.create(NumbersActivity.this, currentWordObject.getmAudioResourceId());
+                    mMediaPlayer = MediaPlayer.create(getActivity(), currentWordObject.getmAudioResourceId());
                     mMediaPlayer.start();
 
                     mMediaPlayer.setOnCompletionListener(mOnCompletionListener);
                 }
             }
         });
+        return rootView;
     }
 
     @Override
-    protected void onStop() {
+    public void onStop() {
         super.onStop();
+
+        // When the activity is stopped, release the media player resources because we won't
+        // be playing any more sounds.
         releaseMediaPlayer();
     }
+
+
 
     /**
      * Clean up the media player by releasing its resources.
@@ -123,13 +136,4 @@ public class NumbersActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                NavUtils.navigateUpFromSameTask(this);
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
 }
